@@ -247,21 +247,22 @@ namespace FreeBNS.App
                         for (int i = 0; i < keys.Length; i++)
                         {
                             int v1;
-                            KeyMap.TryGetValue(keys[i], out v1);
+                            KeyMap.TryGetValue(keys[i].ToUpper(), out v1);
                             values[i] = (byte)v1;
                         }
                         System.Diagnostics.Debug.WriteLine(val.KillKey + " " + keys.Length + " " + keys.ToString() + " " + values[0] + " " + values[1]);
-                        Keyboard.HoldGroupKey(values, val.KillKeyUpTime);
+                        Keyboard.HoldGroupKey(values, val.KillKeyDownTime, val.KillKeyUpTime);
                     }
                     else
                     {
                         int v2;
                         KeyMap.TryGetValue(val.KillKey, out v2);
-                        Keyboard.HoldKey((byte)v2, val.KillKeyUpTime);
+                        Keyboard.HoldKey((byte)v2, val.KillKeyDownTime, val.KillKeyUpTime);
                     }
-                    val.KillLastUseTime = nowTimestamp;
+                    System.Diagnostics.Debug.WriteLine(val.KillKey + " " + val.KillTime);
                 }
-                System.Diagnostics.Debug.WriteLine(val.KillKey + " " + val.KillTime);
+                val.KillLastUseTime = nowTimestamp;
+                //System.Diagnostics.Debug.WriteLine(val.KillKey + " " + val.KillTime);
             }
         }
 

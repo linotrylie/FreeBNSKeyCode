@@ -106,33 +106,28 @@ namespace FreeBNS.Hook
         /// Keyboard.KeyUp((byte)Keys.F24,5000);
         /// </code>
         /// </example>
-        public static void HoldKey(byte key, int duration)
+        public static void HoldKey(byte key, int downduration, int upduration)
         {
-            int totalDuration = 0;
-            while (totalDuration < duration)
-            {
-                keybd_event(key, 0, KEY_DOWN_EVENT, 0);
-                keybd_event(key, 0, KEY_UP_EVENT, 0);
-                System.Threading.Thread.Sleep(PauseBetweenStrokes);
-                totalDuration += PauseBetweenStrokes;
-            }
+            System.Threading.Thread.Sleep(downduration);
+            keybd_event(key, 0, KEY_DOWN_EVENT, 0);
+            System.Threading.Thread.Sleep(upduration);
+            keybd_event(key, 0, KEY_UP_EVENT, 0);
+            System.Threading.Thread.Sleep(PauseBetweenStrokes);
         }
 
-        public static void HoldGroupKey(byte[] keys, int duration)
+        public static void HoldGroupKey(byte[] keys, int downduration, int upduration)
         {
             if (keys.Length < 2)
             {
                 return;
             }
-            int totalDuration = 0;
-            while (totalDuration < duration)
-            {
-                keybd_event(keys[0], 0, KEY_DOWN_EVENT, 0);
-                keybd_event(keys[1], 0, 0, 0);
-                keybd_event(keys[0], 0, KEY_UP_EVENT, 0);
-                System.Threading.Thread.Sleep(PauseBetweenStrokes);
-                totalDuration += PauseBetweenStrokes;
-            }
+            System.Threading.Thread.Sleep(downduration);
+            keybd_event(keys[0], 0, KEY_DOWN_EVENT, 0);
+            PressKey(keys[1]);
+            System.Threading.Thread.Sleep(upduration);
+            keybd_event(keys[0], 0, KEY_UP_EVENT, 0);
+            System.Threading.Thread.Sleep(PauseBetweenStrokes);
+
         }
 
         /// <summary>
