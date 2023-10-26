@@ -1,4 +1,5 @@
-﻿using FreeBNS.Model;
+﻿using FreeBNS.Hook;
+using FreeBNS.Model;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -24,7 +25,6 @@ namespace FreeBNS.App
         public KillSettingControl(int n)
         {
             index = n;
-
             InitializeComponent();
         }
 
@@ -88,15 +88,31 @@ namespace FreeBNS.App
                 MessageBox.Show("请填写完整技能键位！");
                 return;
             }
+
+            string[] keys = this.textBox1.Text.Split(new char[] { '+' });
+            if (keys.Length < 1 || keys.Length > 2)
+            {
+                MessageBox.Show("技能组合键超过了两个！");
+                return;
+            }
+
+            foreach (string key in keys)
+            {
+                if (!Keyboard.KeyMap.ContainsKey(key.ToUpper()))
+                {
+                    MessageBox.Show("键位不存在！");
+                    return;
+                }
+            }
             this.listView1.BeginUpdate();
             int n = this.listView1.Items.Count + 1;
             ListViewItem item = new ListViewItem();
             item.ImageIndex = n;
             item.Text = n.ToString();
             item.SubItems.Add(this.textBox1.Text);
-            item.SubItems.Add(this.textBox4.Text);
-            item.SubItems.Add(this.textBox3.Text);
-            item.SubItems.Add(this.textBox2.Text);
+            item.SubItems.Add(this.textBox4.Text + "ms");
+            item.SubItems.Add(this.textBox3.Text + "ms");
+            item.SubItems.Add(this.textBox2.Text + "s");
             this.listView1.Items.Add(item);
             this.listView1.EndUpdate();
             Kill kill = new Kill();
@@ -162,6 +178,7 @@ namespace FreeBNS.App
 
         private void bindListView(List<Kill> kills)
         {
+            this.listView1.Items.Clear();
             this.listView1.BeginUpdate();
             foreach (Kill val in kills)
             {
@@ -232,6 +249,95 @@ namespace FreeBNS.App
                 return true;
             }
             return false;
+        }
+        //“清除选定行”按钮，清除选择的行
+        private void button_DelRow_Click(object sender, EventArgs e)
+        {
+            if (listView1.SelectedItems.Count > 0)//判断lv有被选中项
+            {
+                int i = listView1.SelectedItems[0].Index;
+                listView1.Items.Remove(listView1.SelectedItems[0]);   //按项移除
+                if (index == 1)
+                {
+                    kill01.RemoveAt(i);
+                }
+                if (index == 2)
+                {
+                    kill02.RemoveAt(i);
+                }
+                if (index == 3)
+                {
+                    kill03.RemoveAt(i);
+                }
+                if (index == 4)
+                {
+                    kill04.RemoveAt(i);
+                }
+                if (index == 5)
+                {
+                    kill05.RemoveAt(i);
+                }
+            }
+        }
+
+        private void button_DelAllRow_Click(object sender, EventArgs e)
+        {
+            listView1.Items.Clear();   //清除所有项，不包括标题栏
+            if (index == 1)
+            {
+                kill01.Clear();
+            }
+            if (index == 2)
+            {
+                kill02.Clear();
+            }
+            if (index == 3)
+            {
+                kill03.Clear();
+            }
+            if (index == 4)
+            {
+                kill04.Clear();
+            }
+            if (index == 5)
+            {
+                kill05.Clear();
+            }
+        }
+
+        public void setKillList(int index, List<Kill> kills)
+        {
+            if (index == 1 && kill01 != null)
+            {
+                kill01.Clear();
+                kill01 = kills;
+                bindListView(kill01);
+            }
+            if (index == 2 && kill02 != null)
+            {
+                kill02.Clear();
+                kill02 = kills;
+                bindListView(kill02);
+            }
+            if (index == 3 && kill03 != null)
+            {
+                kill03.Clear();
+                kill03 = kills;
+                bindListView(kill03);
+            }
+            if (index == 4 && kill04 != null)
+            {
+                kill04.Clear();
+                kill04 = kills;
+                bindListView(kill04);
+            }
+            if (index == 5 && kill05 != null)
+            {
+                kill05.Clear();
+                kill05 = kills;
+                bindListView(kill05);
+            }
+            return;
         }
     }
 }

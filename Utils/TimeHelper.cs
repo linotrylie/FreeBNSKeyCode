@@ -71,5 +71,19 @@ namespace FreeBNS.Utils
             TimeSpan timeSpan = new TimeSpan(DateTimeUnix2.Ticks - DateTimeUnix1.Ticks);
             return timeSpan;
         }
+
+        /// <summary>  
+        /// 时间戳Timestamp转换成日期  
+        /// </summary>  
+        /// <param name="timeStamp"></param>  
+        /// <returns></returns>  
+        public static DateTime GetDateTime(int timeStamp)
+        {
+            DateTime dtStart = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1));
+            long lTime = ((long)timeStamp * 10000000);
+            TimeSpan toNow = new TimeSpan(lTime);
+            DateTime targetDt = dtStart.Add(toNow);
+            return targetDt;
+        }
     }
 }

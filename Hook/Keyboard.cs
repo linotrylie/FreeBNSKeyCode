@@ -73,8 +73,8 @@ namespace FreeBNS.Hook
             KeyMap.Add("F10", 0x79);
             KeyMap.Add("F11", 0x7A);
             KeyMap.Add("F12", 0x7B);
-            KeyMap.Add("SHIFT", 16);
-            KeyMap.Add("CTRL", 17);
+            KeyMap.Add("SHIFT", 0x10);
+            KeyMap.Add("CTRL", 0x11);
             KeyMap.Add("ALT", 18);
             KeyMap.Add("-", 0x6D);
             KeyMap.Add("=", 187);
@@ -86,11 +86,11 @@ namespace FreeBNS.Hook
         /// <summary>
         /// Key down flag
         /// </summary>
-        private const int KEY_DOWN_EVENT = 0x0001;
+        private const int KEY_DOWN_EVENT = 0;
         /// <summary>
         /// Key up flag
         /// </summary>
-        private const int KEY_UP_EVENT = 0x0002;
+        private const int KEY_UP_EVENT = 2;
         /// <summary>
         /// ms to wait between keystrokes when holding a key down
         /// </summary>
@@ -110,9 +110,8 @@ namespace FreeBNS.Hook
         {
             System.Threading.Thread.Sleep(downduration);
             keybd_event(key, 0, KEY_DOWN_EVENT, 0);
-            System.Threading.Thread.Sleep(upduration);
             keybd_event(key, 0, KEY_UP_EVENT, 0);
-            System.Threading.Thread.Sleep(PauseBetweenStrokes);
+            System.Threading.Thread.Sleep(upduration);
         }
 
         public static void HoldGroupKey(byte[] keys, int downduration, int upduration)
@@ -122,12 +121,10 @@ namespace FreeBNS.Hook
                 return;
             }
             System.Threading.Thread.Sleep(downduration);
-            keybd_event(keys[0], 0, KEY_DOWN_EVENT, 0);
+            keybd_event(keys[0], 0, 0, 0);
             PressKey(keys[1]);
-            System.Threading.Thread.Sleep(upduration);
             keybd_event(keys[0], 0, KEY_UP_EVENT, 0);
-            System.Threading.Thread.Sleep(PauseBetweenStrokes);
-
+            System.Threading.Thread.Sleep(upduration);
         }
 
         /// <summary>

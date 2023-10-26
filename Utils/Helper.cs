@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace FreeBNS.Utils
 {
@@ -24,6 +25,23 @@ namespace FreeBNS.Utils
                 pwd = pwd + s[i].ToString("X");
             }
             return pwd.ToLower();
+        }
+
+        public static string GetAvatarUrl(string str)
+        {
+            string input = str;
+            string pattern = @"^https:\/\/www\.5ixiaohui\.com\/upload\/avatar\/000\/(\d+)\.png$";
+            string replacement = @"https://www.5ixiaohui.com/upload/avatar/000/$1.png";
+            Match match = Regex.Match(input, pattern);
+            if (match.Success)
+            {
+                string result = Regex.Replace(input, pattern, replacement);
+                return result;
+            }
+            else
+            {
+                return "";
+            }
         }
     }
 }

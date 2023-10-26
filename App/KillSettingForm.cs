@@ -4,17 +4,19 @@ using FreeBNS.Utils;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Web;
 using System.Windows.Forms;
 
 namespace FreeBNS.App
 {
     public partial class KillSettingForm : Master
     {
-        private UserControl killControl01;
-        private UserControl killControl02;
-        private UserControl killControl03;
-        private UserControl killControl04;
-        private UserControl killControl05;
+        private KillSettingControl killControl01;
+        private KillSettingControl killControl02;
+        private KillSettingControl killControl03;
+        private KillSettingControl killControl04;
+        private KillSettingControl killControl05;
+        private UserInfoControl userInfoControl;
 
         MouseHook mh;
         MouseEventArgs mouseDown1;
@@ -33,6 +35,10 @@ namespace FreeBNS.App
         private string buttonEvent = "";
 
         private int index = 1;
+
+        private static string page = "1";
+        private static string totalPage = "1";
+        private static string pageSize = "14";
 
         public KillSettingForm()
         {
@@ -66,12 +72,20 @@ namespace FreeBNS.App
 
         private void KillSettingForm_Load(object sender, EventArgs e)
         {
+            if (userInfo == null)
+            {
+                MainPage mp = new MainPage();
+                mp.ShowDialog();
+                this.Hide();
+                return;
+            }
             KeyMap = Keyboard.getKeyMap();
             killControl01 = new KillSettingControl(1);
             killControl02 = new KillSettingControl(2);
             killControl03 = new KillSettingControl(3);
             killControl04 = new KillSettingControl(4);
             killControl05 = new KillSettingControl(5);
+            userInfoControl = new UserInfoControl(userInfo);
             if (this.index == 1)
             {
                 this.btnSideFirst.BackColor = Color.MediumSeaGreen;
@@ -83,12 +97,21 @@ namespace FreeBNS.App
                 panel2.Controls.Clear();
                 panel2.Controls.Add(killControl01);
             }
-            if (!canUse)
+            startMouseClickEvent();
+        }
+
+        private void startMouseClickEvent()
+        {
+            if (canUse)
             {
                 mh = new MouseHook();
                 mh.SetHook();
                 mh.MouseClickDownEvent += mh_MouseClickDownEvent;
                 mh.MouseClickUpEvent += mh_MouseClickUpEvent;
+            }
+            else
+            {
+                MessageBox.Show("没有使用时长了，请前去个人中心充值！");
             }
         }
 
@@ -211,33 +234,38 @@ namespace FreeBNS.App
             switch (button)
             {
                 case "Left":
-                    go_skill(KillSettingControl.getKillList(4), KillSettingControl.getIsOpen(4));
+                    go_skill(4, KillSettingControl.getKillList(4), KillSettingControl.getIsOpen(4));
                     break;
                 case "Right":
-                    go_skill(KillSettingControl.getKillList(5), KillSettingControl.getIsOpen(5));
+                    go_skill(5, KillSettingControl.getKillList(5), KillSettingControl.getIsOpen(5));
                     break;
                 case "Middle":
-                    go_skill(KillSettingControl.getKillList(3), KillSettingControl.getIsOpen(3));
+                    go_skill(3, KillSettingControl.getKillList(3), KillSettingControl.getIsOpen(3));
                     break;
                 case "XButton1":
-                    go_skill(KillSettingControl.getKillList(1), KillSettingControl.getIsOpen(1));
+                    go_skill(1, KillSettingControl.getKillList(1), KillSettingControl.getIsOpen(1));
                     break;
                 case "XButton2":
-                    go_skill(KillSettingControl.getKillList(2), KillSettingControl.getIsOpen(2));
+                    go_skill(2, KillSettingControl.getKillList(2), KillSettingControl.getIsOpen(2));
                     break;
             }
         }
 
-        private void go_skill(List<Kill> kills, bool isOpen)
+        private void go_skill(int n, List<Kill> kills, bool isOpen)
         {
-            string v = TimeHelper.GetTimeStamp();
-            int nowTimestamp = int.Parse(v);
+            //System.Diagnostics.Debug.WriteLine("进入技能释放循环");
+            //System.Diagnostics.Debug.WriteLine(JsonHelper.JsonSerializer<List<Kill>>(kills));
             if (kills.Count < 1 || !isOpen)
             {
+                //System.Diagnostics.Debug.WriteLine("提前返回了");
                 return;
             }
+            //System.Diagnostics.Debug.WriteLine(kills.ToString());
             foreach (Kill val in kills)
             {
+                string v = TimeHelper.GetTimeStamp();
+                int nowTimestamp = int.Parse(v);
+                System.Diagnostics.Debug.WriteLine(val.KillKey + " " + val.KillTime + " " + val.KillLastUseTime + " " + nowTimestamp);
                 if (val.KillLastUseTime == 0 || (nowTimestamp - val.KillLastUseTime) >= val.KillTime)
                 {
                     if (val.KillKey.Contains("+"))
@@ -250,25 +278,41 @@ namespace FreeBNS.App
                             KeyMap.TryGetValue(keys[i].ToUpper(), out v1);
                             values[i] = (byte)v1;
                         }
-                        System.Diagnostics.Debug.WriteLine(val.KillKey + " " + keys.Length + " " + keys.ToString() + " " + values[0] + " " + values[1]);
+                        //System.Diagnostics.Debug.WriteLine(val.KillKey + " " + keys.Length + " " + keys.ToString() + " " + values[0] + " " + values[1]);
                         Keyboard.HoldGroupKey(values, val.KillKeyDownTime, val.KillKeyUpTime);
                     }
                     else
                     {
                         int v2;
-                        KeyMap.TryGetValue(val.KillKey, out v2);
+                        KeyMap.TryGetValue(val.KillKey.ToUpper(), out v2);
                         Keyboard.HoldKey((byte)v2, val.KillKeyDownTime, val.KillKeyUpTime);
                     }
-                    System.Diagnostics.Debug.WriteLine(val.KillKey + " " + val.KillTime);
+                    val.KillLastUseTime = nowTimestamp;
+                    //System.Diagnostics.Debug.WriteLine(val.KillKey + " " + val.KillTime + " " + val.KillLastUseTime);
                 }
-                val.KillLastUseTime = nowTimestamp;
-                //System.Diagnostics.Debug.WriteLine(val.KillKey + " " + val.KillTime);
+
+                //System.Diagnostics.Debug.WriteLine(val.KillKey + " " + val.KillTime + " " + val.KillLastUseTime + " " + val.KillLastUseTime);
             }
+            //System.Diagnostics.Debug.WriteLine("释放完成后：" + JsonHelper.JsonSerializer<List<Kill>>(kills));
+            return;
         }
 
         private void tabControl1_SelectIndexChanged(object sender, EventArgs e)
         {
+            if (tabControl1.SelectedIndex == 0)
+            {
 
+            }
+            if (tabControl1.SelectedIndex == 1)
+            {
+                KadaoDataList(page, pageSize);
+            }
+            if (tabControl1.SelectedIndex == 2)
+            {
+                userInfoControl.Show();
+                panel3.Controls.Clear();
+                panel3.Controls.Add(userInfoControl);
+            }
         }
 
         private void btnSideFirst_Click(object sender, EventArgs e)
@@ -340,8 +384,149 @@ namespace FreeBNS.App
         private void KillSettingForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             //ZDYHook.RemoveHook();
-            mh.UnHook();
+            if (canUse)
+            {
+                mh.UnHook();
+            }
             Application.Exit();
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+
+            KillDataSaveDialog kd = new KillDataSaveDialog(KillSettingControl.getKillList(this.index));
+            kd.ShowDialog();
+        }
+
+        private void KadaoDataList(string tpage, string page_size)
+        {
+            if (userInfo == null)
+            {
+                MessageBox.Show("请登录后操作！");
+                return;
+            }
+            Data data = HttpHelper.GetMyKadaoDataList(userInfo.Username, page_size, tpage);
+            bindListView(data);
+            this.lblTotalPage.Text = data.TotalPage.ToString();
+            totalPage = data.TotalPage.ToString();
+            page = tpage;
+            this.lblPage.Text = tpage;
+        }
+
+
+        private void bindListView(Data data)
+        {
+            this.listView1.Items.Clear();
+            this.listView1.BeginUpdate();
+            foreach (MyKadaoData val in data.List)
+            {
+                int n = this.listView1.Items.Count + 1;
+                ListViewItem item = new ListViewItem();
+                item.ImageIndex = n;
+                item.Text = n.ToString();
+                item.SubItems.Add(val.Title);
+                item.SubItems.Add(val.Data);
+                item.SubItems.Add(val.CreateTime.ToString());
+                this.listView1.Items.Add(item);
+            }
+            this.listView1.EndUpdate();
+
+        }
+
+        private void setKillList(int n)
+        {
+            string str = listView1.SelectedItems[0].SubItems[2].Text;
+            List<Kill> kills = JsonHelper.JsonDeserialize<List<Kill>>(HttpUtility.HtmlDecode(str));
+            switch (n)
+            {
+                case 1:
+                    killControl01.setKillList(n, kills);
+                    break;
+                case 2:
+                    killControl02.setKillList(n, kills);
+                    break;
+                case 3:
+                    killControl03.setKillList(n, kills);
+                    break;
+                case 4:
+                    killControl04.setKillList(n, kills);
+                    break;
+                case 5:
+                    killControl05.setKillList(n, kills);
+                    break;
+            }
+        }
+
+        private void btnSideFirstLoad_Click(object sender, EventArgs e)
+        {
+            if (listView1.SelectedIndices != null && listView1.SelectedIndices.Count > 0)
+            {
+                setKillList(1);
+            }
+        }
+
+        private void btnSideSecondLoad_Click(object sender, EventArgs e)
+        {
+            if (listView1.SelectedItems.Count > 0)//判断lv有被选中项
+            {
+                setKillList(2);
+            }
+        }
+
+        private void btnMidLoad_Click(object sender, EventArgs e)
+        {
+            if (listView1.SelectedItems.Count > 0)//判断lv有被选中项
+            {
+                setKillList(3);
+            }
+        }
+
+        private void btnLeftLoad_Click(object sender, EventArgs e)
+        {
+            if (listView1.SelectedItems.Count > 0)//判断lv有被选中项
+            {
+                setKillList(4);
+            }
+        }
+
+        private void btnRightLoad_Click(object sender, EventArgs e)
+        {
+            if (listView1.SelectedItems.Count > 0)//判断lv有被选中项
+            {
+                setKillList(5);
+            }
+        }
+
+        private void btnNextPage_Click(object sender, EventArgs e)
+        {
+            int newpage = int.Parse(page) + 1;
+            int nowTotalPage = int.Parse(totalPage);
+            if (newpage > nowTotalPage) newpage = nowTotalPage;
+            KadaoDataList(newpage.ToString(), pageSize);
+        }
+
+        private void btnPrevious_Click(object sender, EventArgs e)
+        {
+            int newpage = int.Parse(page) - 1;
+            int nowTotalPage = int.Parse(totalPage);
+            if (newpage <= 0) newpage = 1;
+            KadaoDataList(newpage.ToString(), pageSize);
+        }
+
+        //“清除选定行”按钮，清除选择的行
+        private void button_DelRow_Click(object sender, EventArgs e)
+        {
+            if (listView1.SelectedItems.Count > 0)//判断lv有被选中项
+            {
+                string kid = listView1.SelectedItems[0].SubItems[0].Text;
+                if (!HttpHelper.DelMyKadaoData(userInfo.Username, kid))
+                {
+                    MessageBox.Show("删除失败！");
+                    return;
+                }
+                listView1.Items.Remove(listView1.SelectedItems[0]);   //按项移除
+            }
+            KadaoDataList("1", pageSize);
         }
     }
 }

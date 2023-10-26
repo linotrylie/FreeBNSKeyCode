@@ -14,8 +14,8 @@ namespace FreeBNS
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new MainPage());
-            Application.Run(new KillSettingForm());
+            Application.Run(new MainPage());
+            //Application.Run(new KillSettingForm());
         }
     }
 }
