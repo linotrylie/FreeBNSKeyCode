@@ -95,6 +95,5 @@ namespace FreeBNS.App
                 return;
             }
         }
-        //this.Dispose();
     }
 }

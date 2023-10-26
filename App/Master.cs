@@ -9,10 +9,13 @@ namespace FreeBNS.App
     {
         public static User userInfo = null;
         public static bool canUse = false;
+
         public static Dictionary<string, Int32> KeyMap = new Dictionary<string, Int32>();
         public Master()
         {
+
             InitializeComponent();
         }
+
     }
 }

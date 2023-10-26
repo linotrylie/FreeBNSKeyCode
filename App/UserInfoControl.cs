@@ -9,9 +9,6 @@ namespace FreeBNS.App
     {
         private static User user;
         private ChongZhiDialog cz;
-        public delegate void RefreshEvent();
-
-        public event RefreshEvent refreshFather;
         public UserInfoControl(User userInfo)
         {
             user = userInfo;
@@ -28,8 +25,9 @@ namespace FreeBNS.App
                 this.Hide();
                 return;
             }
+            cz = new ChongZhiDialog(user);
+            cz.refresh += RefreshSelf;
             LoadUserInfo();
-
         }
         private void LoadUserInfo()
         {
@@ -48,15 +46,8 @@ namespace FreeBNS.App
 
         private void RefreshSelf()
         {
-            if (user == null)
-            {
-                MessageBox.Show("请登录");
-                MainPage mp = new MainPage();
-                mp.ShowDialog();
-                this.Hide();
-                return;
-            }
-            LoadUserInfo();
+            user = ChongZhiDialog.user;
+            this.Refresh();
         }
     }
 }

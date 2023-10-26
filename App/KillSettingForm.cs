@@ -72,34 +72,44 @@ namespace FreeBNS.App
 
         private void KillSettingForm_Load(object sender, EventArgs e)
         {
-            if (userInfo == null)
+            try
             {
-                MainPage mp = new MainPage();
-                mp.ShowDialog();
-                this.Hide();
+                if (userInfo == null)
+                {
+                    MainPage mp = new MainPage();
+                    mp.ShowDialog();
+                    this.Hide();
+                    return;
+                }
+                KeyMap = Keyboard.getKeyMap();
+                killControl01 = new KillSettingControl(1);
+                killControl02 = new KillSettingControl(2);
+                killControl03 = new KillSettingControl(3);
+                killControl04 = new KillSettingControl(4);
+                killControl05 = new KillSettingControl(5);
+                userInfoControl = new UserInfoControl(userInfo);
+                if (this.index == 1)
+                {
+                    this.btnSideFirst.BackColor = Color.MediumSeaGreen;
+                    this.btnSideSecond.BackColor = Color.Transparent;
+                    this.btnMid.BackColor = Color.Transparent;
+                    this.btnLeft.BackColor = Color.Transparent;
+                    this.btnRight.BackColor = Color.Transparent;
+                    killControl01.Show();
+                    panel2.Controls.Clear();
+                    panel2.Controls.Add(killControl01);
+                }
+                //开始监听鼠标键位活动
+                startMouseClickEvent();
+                //加载卡刀数据列表
+                KadaoDataList(page, pageSize);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("请稍后~");
                 return;
             }
-            KeyMap = Keyboard.getKeyMap();
-            killControl01 = new KillSettingControl(1);
-            killControl02 = new KillSettingControl(2);
-            killControl03 = new KillSettingControl(3);
-            killControl04 = new KillSettingControl(4);
-            killControl05 = new KillSettingControl(5);
-            userInfoControl = new UserInfoControl(userInfo);
-            if (this.index == 1)
-            {
-                this.btnSideFirst.BackColor = Color.MediumSeaGreen;
-                this.btnSideSecond.BackColor = Color.Transparent;
-                this.btnMid.BackColor = Color.Transparent;
-                this.btnLeft.BackColor = Color.Transparent;
-                this.btnRight.BackColor = Color.Transparent;
-                killControl01.Show();
-                panel2.Controls.Clear();
-                panel2.Controls.Add(killControl01);
-            }
-            startMouseClickEvent();
         }
-
         private void startMouseClickEvent()
         {
             if (canUse)
@@ -185,42 +195,50 @@ namespace FreeBNS.App
                     timer2.Stop();
                     break;
             }
-            System.Diagnostics.Debug.WriteLine(e.X + "-" + e.Y + "-" + e.Button + "弹起");
+            //System.Diagnostics.Debug.WriteLine(e.X + "-" + e.Y + "-" + e.Button + "弹起");
             return false;
         }
 
         private bool mh_MouseClickDownEvent(object sender, MouseEventArgs e)
         {
-            if (e.Button.ToString() == "None")
+            try
             {
+                if (e.Button.ToString() == "None")
+                {
+                    return false;
+                }
+
+                switch (e.Button.ToString())
+                {
+                    case "Left":
+                        this.mouseDown4 = e;
+                        timer4.Start();
+                        break;
+                    case "Right":
+                        this.mouseDown5 = e;
+                        timer5.Start();
+                        break;
+                    case "Middle":
+                        this.mouseDown3 = e;
+                        timer3.Start();
+                        break;
+                    case "XButton1":
+                        this.mouseDown1 = e;
+                        timer1.Start();
+                        break;
+                    case "XButton2":
+                        this.mouseDown2 = e;
+                        timer2.Start();
+                        break;
+                }
+                //System.Diagnostics.Debug.WriteLine(e.X + "-" + e.Y + "-" + e.Button + "按下");
+                return true;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("请稍后~");
                 return false;
             }
-
-            switch (e.Button.ToString())
-            {
-                case "Left":
-                    this.mouseDown4 = e;
-                    timer4.Start();
-                    break;
-                case "Right":
-                    this.mouseDown5 = e;
-                    timer5.Start();
-                    break;
-                case "Middle":
-                    this.mouseDown3 = e;
-                    timer3.Start();
-                    break;
-                case "XButton1":
-                    this.mouseDown1 = e;
-                    timer1.Start();
-                    break;
-                case "XButton2":
-                    this.mouseDown2 = e;
-                    timer2.Start();
-                    break;
-            }
-            System.Diagnostics.Debug.WriteLine(e.X + "-" + e.Y + "-" + e.Button + "按下");
-            return true;
         }
 
         private void longMouseDown(MouseEventArgs e)
@@ -305,7 +323,7 @@ namespace FreeBNS.App
             }
             if (tabControl1.SelectedIndex == 1)
             {
-                KadaoDataList(page, pageSize);
+                //KadaoDataList(page, pageSize);
             }
             if (tabControl1.SelectedIndex == 2)
             {
@@ -400,17 +418,35 @@ namespace FreeBNS.App
 
         private void KadaoDataList(string tpage, string page_size)
         {
-            if (userInfo == null)
+            try
             {
-                MessageBox.Show("请登录后操作！");
+                if (userInfo == null)
+                {
+                    MessageBox.Show("请登录后操作！");
+                    return;
+                }
+                //Data data = null;
+                Data data = HttpHelper.GetMyKadaoDataList(userInfo.Username, page_size, tpage);
+                if (data == null)
+                {
+                    this.lblTotalPage.Text = "1";
+                    totalPage = "1";
+                    page = "1";
+                    this.lblPage.Text = "1";
+                    return;
+                }
+                bindListView(data);
+                this.lblTotalPage.Text = data.TotalPage.ToString();
+                totalPage = data.TotalPage.ToString();
+                page = tpage;
+                this.lblPage.Text = tpage;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("没有数据!");
                 return;
             }
-            Data data = HttpHelper.GetMyKadaoDataList(userInfo.Username, page_size, tpage);
-            bindListView(data);
-            this.lblTotalPage.Text = data.TotalPage.ToString();
-            totalPage = data.TotalPage.ToString();
-            page = tpage;
-            this.lblPage.Text = tpage;
+
         }
 
 
@@ -459,58 +495,115 @@ namespace FreeBNS.App
 
         private void btnSideFirstLoad_Click(object sender, EventArgs e)
         {
-            if (listView1.SelectedIndices != null && listView1.SelectedIndices.Count > 0)
+            try
             {
-                setKillList(1);
+                if (listView1.SelectedIndices != null && listView1.SelectedIndices.Count > 0)
+                {
+                    setKillList(1);
+                }
             }
+            catch (Exception)
+            {
+                MessageBox.Show("遇到些问题~");
+                return;
+            }
+
         }
 
         private void btnSideSecondLoad_Click(object sender, EventArgs e)
         {
-            if (listView1.SelectedItems.Count > 0)//判断lv有被选中项
+            try
             {
-                setKillList(2);
+                if (listView1.SelectedIndices != null && listView1.SelectedIndices.Count > 0)
+                {
+                    setKillList(2);
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("遇到些问题~");
+                return;
             }
         }
 
         private void btnMidLoad_Click(object sender, EventArgs e)
         {
-            if (listView1.SelectedItems.Count > 0)//判断lv有被选中项
+            try
             {
-                setKillList(3);
+                if (listView1.SelectedIndices != null && listView1.SelectedIndices.Count > 0)
+                {
+                    setKillList(3);
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("遇到些问题~");
+                return;
             }
         }
 
         private void btnLeftLoad_Click(object sender, EventArgs e)
         {
-            if (listView1.SelectedItems.Count > 0)//判断lv有被选中项
+            try
             {
-                setKillList(4);
+                if (listView1.SelectedIndices != null && listView1.SelectedIndices.Count > 0)
+                {
+                    setKillList(4);
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("遇到些问题~");
+                return;
             }
         }
 
         private void btnRightLoad_Click(object sender, EventArgs e)
         {
-            if (listView1.SelectedItems.Count > 0)//判断lv有被选中项
+            try
             {
-                setKillList(5);
+                if (listView1.SelectedIndices != null && listView1.SelectedIndices.Count > 0)
+                {
+                    setKillList(5);
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("遇到些问题~");
+                return;
             }
         }
 
         private void btnNextPage_Click(object sender, EventArgs e)
         {
+            if (!this.btnNextPage.Enabled)
+            { return; }
+            this.btnNextPage.Enabled = false;
             int newpage = int.Parse(page) + 1;
             int nowTotalPage = int.Parse(totalPage);
-            if (newpage > nowTotalPage) newpage = nowTotalPage;
+            if (newpage > nowTotalPage)
+            {
+                this.btnNextPage.Enabled = true;
+                return;
+            }
             KadaoDataList(newpage.ToString(), pageSize);
+            this.btnNextPage.Enabled = true;
         }
 
         private void btnPrevious_Click(object sender, EventArgs e)
         {
+            //当程序进来判断Enabled状态,若是false表示上一次未执行完,
+            if (!this.btnPrevious.Enabled)
+            { return; }
+            this.btnPrevious.Enabled = false;
             int newpage = int.Parse(page) - 1;
-            int nowTotalPage = int.Parse(totalPage);
-            if (newpage <= 0) newpage = 1;
+            if (newpage < 1)
+            {
+                this.btnPrevious.Enabled = true;
+                return;
+            }
             KadaoDataList(newpage.ToString(), pageSize);
+            this.btnPrevious.Enabled = true;
         }
 
         //“清除选定行”按钮，清除选择的行
@@ -527,6 +620,16 @@ namespace FreeBNS.App
                 listView1.Items.Remove(listView1.SelectedItems[0]);   //按项移除
             }
             KadaoDataList("1", pageSize);
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            //当程序进来判断Enabled状态,若是false表示上一次未执行完,
+            if (!this.btnRefresh.Enabled)
+            { return; }
+            this.btnRefresh.Enabled = false;
+            KadaoDataList(page, pageSize);
+            this.btnRefresh.Enabled = true;
         }
     }
 }

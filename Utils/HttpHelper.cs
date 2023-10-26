@@ -41,7 +41,7 @@ namespace FreeBNS.Utils
             return user;
         }
 
-        public static bool PostSaveKadaoData(string username, string title, List<Kill> kills)
+        public static string PostSaveKadaoData(string username, string title, List<Kill> kills)
         {
             var options = new RestClientOptions(url)
             {
@@ -57,9 +57,9 @@ namespace FreeBNS.Utils
             ResponseBody obj = JsonConvert.DeserializeObject<ResponseBody>(response.Content);
             if (obj.Code != "0")
             {
-                return false;
+                return obj.Msg;
             }
-            return true;
+            return "";
         }
 
         public static Data GetMyKadaoDataList(string username, string pageSize, string page)
@@ -74,7 +74,7 @@ namespace FreeBNS.Utils
             var response = client.Execute(request);
             ResponseBodyGetMyKadaoData obj = new ResponseBodyGetMyKadaoData();
             obj = JsonConvert.DeserializeObject<ResponseBodyGetMyKadaoData>(response.Content);
-            if (obj.Code != 0)
+            if (obj.Code != 0 || obj.Data.List.Count < 1)
             {
                 return null;
             }

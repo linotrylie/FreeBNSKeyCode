@@ -8,7 +8,11 @@ namespace FreeBNS.App
     public partial class ChongZhiDialog : Form
     {
         private static KadaoBiLi kadaoBi;
-        private static User user;
+        public static User user;
+
+        public delegate void RefreshDelegate(); // 子窗口声明定义委托 refresh()
+        public event RefreshDelegate refresh;
+
         public ChongZhiDialog(User userInfo)
         {
             user = userInfo;
@@ -29,28 +33,40 @@ namespace FreeBNS.App
 
         private void btnOk_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(txtGolds.Text) || int.Parse(txtGolds.Text) <= 0)
+            try
             {
+                if (string.IsNullOrEmpty(txtGolds.Text) || int.Parse(txtGolds.Text) <= 0)
+                {
+                    return;
+                }
+                int golds = int.Parse(txtGolds.Text);
+                int userGolds = int.Parse(user.Golds);
+                if (golds > userGolds)
+                {
+                    MessageBox.Show("金币余额不足！");
+                    return;
+                }
+                int czTime = int.Parse(txtGolds.Text) * kadaoBi.Time;
+                User resUser = HttpHelper.ChongZhiKadaoTime(user.Username, golds, czTime);
+                if (resUser != null)
+                {
+
+                    Master.userInfo = resUser;
+                    user = resUser;
+                    this.refresh(); // 调用委托
+                    MessageBox.Show("充值成功!请关闭软件，重新登录激活使用权限！");
+                    this.Close();
+                    return;
+                }
+                MessageBox.Show("充值失败!");
+                return;
+
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("充值失败!");
                 return;
             }
-            int golds = int.Parse(txtGolds.Text);
-            int userGolds = int.Parse(user.Golds);
-            if (golds > userGolds)
-            {
-                MessageBox.Show("金币余额不足！");
-                return;
-            }
-            int czTime = int.Parse(txtGolds.Text) * kadaoBi.Time;
-            User resUser = HttpHelper.ChongZhiKadaoTime(user.Username, golds, czTime);
-            if (resUser != null)
-            {
-                Master.userInfo = resUser;
-                MessageBox.Show("充值成功!请关闭软件，重新登录激活使用权限！");
-                this.Close();
-                return;
-            }
-            MessageBox.Show("充值失败!");
-            return;
         }
 
         private void tb_KeyPressInt(object sender, KeyPressEventArgs e)
@@ -73,7 +89,7 @@ namespace FreeBNS.App
             int userKdTime = int.Parse(user.KadaoTime);
             int now = int.Parse(TimeHelper.GetTimeStamp());
             this.txtTime.Text = czTime.ToString();
-            if (userKdTime <= 0)
+            if (userKdTime <= 0 || userKdTime < now)
             {
                 dqTime = now + czTime;
             }

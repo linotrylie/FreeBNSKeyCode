@@ -29,6 +29,7 @@ namespace FreeBNS.App
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(KillSettingForm));
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -40,6 +41,7 @@ namespace FreeBNS.App
             this.btnSideSecond = new System.Windows.Forms.Button();
             this.btnSideFirst = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.btnRefresh = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.lblPage = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
@@ -108,6 +110,7 @@ namespace FreeBNS.App
             // 
             // panel1
             // 
+            this.panel1.BackColor = System.Drawing.Color.White;
             this.panel1.Controls.Add(this.btnSave);
             this.panel1.Controls.Add(this.btnRight);
             this.panel1.Controls.Add(this.btnLeft);
@@ -121,17 +124,23 @@ namespace FreeBNS.App
             // 
             // btnSave
             // 
+            this.btnSave.BackColor = System.Drawing.Color.LawnGreen;
             this.btnSave.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btnSave.Location = new System.Drawing.Point(21, 276);
+            this.btnSave.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.btnSave.Location = new System.Drawing.Point(21, 275);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(123, 23);
+            this.btnSave.Size = new System.Drawing.Size(123, 40);
             this.btnSave.TabIndex = 5;
             this.btnSave.Text = "保存当前页数据";
-            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.UseVisualStyleBackColor = false;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // btnRight
             // 
+            this.btnRight.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnRight.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnRight.ForeColor = System.Drawing.Color.White;
+            this.btnRight.Image = ((System.Drawing.Image)(resources.GetObject("btnRight.Image")));
             this.btnRight.Location = new System.Drawing.Point(21, 186);
             this.btnRight.Name = "btnRight";
             this.btnRight.Size = new System.Drawing.Size(123, 36);
@@ -142,6 +151,10 @@ namespace FreeBNS.App
             // 
             // btnLeft
             // 
+            this.btnLeft.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnLeft.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnLeft.ForeColor = System.Drawing.Color.White;
+            this.btnLeft.Image = ((System.Drawing.Image)(resources.GetObject("btnLeft.Image")));
             this.btnLeft.Location = new System.Drawing.Point(21, 144);
             this.btnLeft.Name = "btnLeft";
             this.btnLeft.Size = new System.Drawing.Size(123, 36);
@@ -152,6 +165,10 @@ namespace FreeBNS.App
             // 
             // btnMid
             // 
+            this.btnMid.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnMid.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnMid.ForeColor = System.Drawing.Color.White;
+            this.btnMid.Image = ((System.Drawing.Image)(resources.GetObject("btnMid.Image")));
             this.btnMid.Location = new System.Drawing.Point(21, 102);
             this.btnMid.Name = "btnMid";
             this.btnMid.Size = new System.Drawing.Size(123, 36);
@@ -162,6 +179,10 @@ namespace FreeBNS.App
             // 
             // btnSideSecond
             // 
+            this.btnSideSecond.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnSideSecond.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSideSecond.ForeColor = System.Drawing.Color.White;
+            this.btnSideSecond.Image = ((System.Drawing.Image)(resources.GetObject("btnSideSecond.Image")));
             this.btnSideSecond.Location = new System.Drawing.Point(21, 60);
             this.btnSideSecond.Name = "btnSideSecond";
             this.btnSideSecond.Size = new System.Drawing.Size(123, 36);
@@ -172,6 +193,10 @@ namespace FreeBNS.App
             // 
             // btnSideFirst
             // 
+            this.btnSideFirst.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnSideFirst.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSideFirst.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.btnSideFirst.Image = ((System.Drawing.Image)(resources.GetObject("btnSideFirst.Image")));
             this.btnSideFirst.Location = new System.Drawing.Point(21, 18);
             this.btnSideFirst.Name = "btnSideFirst";
             this.btnSideFirst.Size = new System.Drawing.Size(123, 36);
@@ -182,6 +207,7 @@ namespace FreeBNS.App
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.btnRefresh);
             this.tabPage2.Controls.Add(this.label4);
             this.tabPage2.Controls.Add(this.lblPage);
             this.tabPage2.Controls.Add(this.label6);
@@ -205,6 +231,19 @@ namespace FreeBNS.App
             this.tabPage2.Text = "卡刀数据";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // btnRefresh
+            // 
+            this.btnRefresh.BackColor = System.Drawing.Color.LawnGreen;
+            this.btnRefresh.Cursor = System.Windows.Forms.Cursors.No;
+            this.btnRefresh.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.btnRefresh.Location = new System.Drawing.Point(578, 279);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(117, 41);
+            this.btnRefresh.TabIndex = 15;
+            this.btnRefresh.Text = "刷新";
+            this.btnRefresh.UseVisualStyleBackColor = false;
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
+            // 
             // label4
             // 
             this.label4.AutoSize = true;
@@ -221,9 +260,9 @@ namespace FreeBNS.App
             this.lblPage.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lblPage.Location = new System.Drawing.Point(409, 368);
             this.lblPage.Name = "lblPage";
-            this.lblPage.Size = new System.Drawing.Size(20, 17);
+            this.lblPage.Size = new System.Drawing.Size(15, 17);
             this.lblPage.TabIndex = 13;
-            this.lblPage.Text = "共";
+            this.lblPage.Text = "1";
             // 
             // label6
             // 
@@ -251,9 +290,9 @@ namespace FreeBNS.App
             this.lblTotalPage.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lblTotalPage.Location = new System.Drawing.Point(485, 368);
             this.lblTotalPage.Name = "lblTotalPage";
-            this.lblTotalPage.Size = new System.Drawing.Size(20, 17);
+            this.lblTotalPage.Size = new System.Drawing.Size(15, 17);
             this.lblTotalPage.TabIndex = 10;
-            this.lblTotalPage.Text = "共";
+            this.lblTotalPage.Text = "1";
             // 
             // label1
             // 
@@ -267,29 +306,36 @@ namespace FreeBNS.App
             // 
             // btnNextPage
             // 
+            this.btnNextPage.BackColor = System.Drawing.Color.Gainsboro;
+            this.btnNextPage.Cursor = System.Windows.Forms.Cursors.No;
             this.btnNextPage.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btnNextPage.Location = new System.Drawing.Point(288, 365);
+            this.btnNextPage.ForeColor = System.Drawing.Color.DarkBlue;
+            this.btnNextPage.Location = new System.Drawing.Point(253, 365);
             this.btnNextPage.Name = "btnNextPage";
             this.btnNextPage.Size = new System.Drawing.Size(75, 23);
             this.btnNextPage.TabIndex = 8;
             this.btnNextPage.Text = "下一页";
-            this.btnNextPage.UseVisualStyleBackColor = true;
+            this.btnNextPage.UseVisualStyleBackColor = false;
             this.btnNextPage.Click += new System.EventHandler(this.btnNextPage_Click);
             // 
             // btnPrevious
             // 
+            this.btnPrevious.BackColor = System.Drawing.Color.Gainsboro;
+            this.btnPrevious.Cursor = System.Windows.Forms.Cursors.No;
             this.btnPrevious.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btnPrevious.Location = new System.Drawing.Point(129, 365);
+            this.btnPrevious.ForeColor = System.Drawing.Color.DarkBlue;
+            this.btnPrevious.Location = new System.Drawing.Point(142, 365);
             this.btnPrevious.Name = "btnPrevious";
             this.btnPrevious.Size = new System.Drawing.Size(75, 23);
             this.btnPrevious.TabIndex = 7;
             this.btnPrevious.Text = "上一页";
-            this.btnPrevious.UseVisualStyleBackColor = true;
+            this.btnPrevious.UseVisualStyleBackColor = false;
             this.btnPrevious.Click += new System.EventHandler(this.btnPrevious_Click);
             // 
             // btnDelSelectedRow
             // 
             this.btnDelSelectedRow.BackColor = System.Drawing.Color.IndianRed;
+            this.btnDelSelectedRow.Cursor = System.Windows.Forms.Cursors.No;
             this.btnDelSelectedRow.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.btnDelSelectedRow.Location = new System.Drawing.Point(578, 326);
             this.btnDelSelectedRow.Name = "btnDelSelectedRow";
@@ -301,6 +347,7 @@ namespace FreeBNS.App
             // 
             // btnRightLoad
             // 
+            this.btnRightLoad.Cursor = System.Windows.Forms.Cursors.No;
             this.btnRightLoad.Location = new System.Drawing.Point(547, 214);
             this.btnRightLoad.Name = "btnRightLoad";
             this.btnRightLoad.Size = new System.Drawing.Size(200, 40);
@@ -311,6 +358,7 @@ namespace FreeBNS.App
             // 
             // btnSideSecondLoad
             // 
+            this.btnSideSecondLoad.Cursor = System.Windows.Forms.Cursors.No;
             this.btnSideSecondLoad.Location = new System.Drawing.Point(547, 76);
             this.btnSideSecondLoad.Name = "btnSideSecondLoad";
             this.btnSideSecondLoad.Size = new System.Drawing.Size(200, 40);
@@ -321,6 +369,7 @@ namespace FreeBNS.App
             // 
             // btnMidLoad
             // 
+            this.btnMidLoad.Cursor = System.Windows.Forms.Cursors.No;
             this.btnMidLoad.Location = new System.Drawing.Point(545, 122);
             this.btnMidLoad.Name = "btnMidLoad";
             this.btnMidLoad.Size = new System.Drawing.Size(200, 40);
@@ -331,6 +380,7 @@ namespace FreeBNS.App
             // 
             // btnLeftLoad
             // 
+            this.btnLeftLoad.Cursor = System.Windows.Forms.Cursors.No;
             this.btnLeftLoad.Location = new System.Drawing.Point(547, 168);
             this.btnLeftLoad.Name = "btnLeftLoad";
             this.btnLeftLoad.Size = new System.Drawing.Size(200, 40);
@@ -341,6 +391,7 @@ namespace FreeBNS.App
             // 
             // btnSideFirstLoad
             // 
+            this.btnSideFirstLoad.Cursor = System.Windows.Forms.Cursors.No;
             this.btnSideFirstLoad.Location = new System.Drawing.Point(547, 30);
             this.btnSideFirstLoad.Name = "btnSideFirstLoad";
             this.btnSideFirstLoad.Size = new System.Drawing.Size(200, 40);
@@ -459,5 +510,6 @@ namespace FreeBNS.App
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ColumnHeader killdata;
         private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Button btnRefresh;
     }
 }
