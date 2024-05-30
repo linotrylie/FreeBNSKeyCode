@@ -7,7 +7,7 @@ namespace FreeBNS.Utils
 {
     class HttpHelper
     {
-        private static string url = "https://free-bns.com/";
+        private static string url = "https://####.com/";
         private static string userLoginUrl = "newuser-login.htm";
         private static string saveKadaoDataUrl = "newuser-save_kadao_data.htm";
         private static string getKadaoBiLiUrl = "newuser-get_kadao_bili.htm";
